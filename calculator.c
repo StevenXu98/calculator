@@ -19,9 +19,9 @@ typedef struct SNode{
 
 
 
-Stack NUM, OPER;//ÊýÕ»ºÍÔËËã·ûÕ»
+Stack NUM, OPER;//æ•°æ ˆå’Œè¿ç®—ç¬¦æ ˆ
 
-//¶ÑÕ»±äÁ¿³õÊ¼»¯ÒÔÉÏ
+//å †æ ˆå˜é‡åˆå§‹åŒ–ä»¥ä¸Š
 
 void Push(ElemenType in,Stack S)
 {
@@ -39,8 +39,8 @@ void Pop(Stack S, ElemenType *out)
 	SNode *FirstCell;
 	FirstCell = S->next;
 	if(!FirstCell){//???
-		printf("ERROR:101 \n");//´íÎó´úÂë101
-		exit(0);//ÖÕÖ¹³ÌÐò£¬´íÎóÔ­Òò¿ÉÄÜÊÇ±í´ïÊ½Î¥·¨
+		printf("ERROR:101 \n");//é”™è¯¯ä»£ç 101
+		exit(0);//ç»ˆæ­¢ç¨‹åºï¼Œé”™è¯¯åŽŸå› å¯èƒ½æ˜¯è¡¨è¾¾å¼è¿æ³•
 	}
 	S->next = FirstCell->next;
 	strcpy(out->operator,FirstCell->date.operator);
@@ -76,17 +76,17 @@ void DestroyStack(Stack *S)
 
 
 
-//¶ÑÕ»²Ù×÷ÒÔÉÏ
+//å †æ ˆæ“ä½œä»¥ä¸Š
 
 struct{
 	char str[100];
 	int kind;//0 is number, 1 is operator
-} OneChar;//ÅÐ¶ÏÃ¿Ò»¸ö¶ÀÁ¢µ¥Î»ÊÇÊý×Ö»òÔËËã·û
+} OneChar;//åˆ¤æ–­æ¯ä¸€ä¸ªç‹¬ç«‹å•ä½æ˜¯æ•°å­—æˆ–è¿ç®—ç¬¦
 
 char *expression;
-int i = 0;//×Ö·û´®Êý×é½Å±ê
+int i = 0;//å­—ç¬¦ä¸²æ•°ç»„è„šæ ‡
 
-//±í´ïÊ½±äÁ¿³õÊ¼»¯ ÒÔÉÏ
+//è¡¨è¾¾å¼å˜é‡åˆå§‹åŒ– ä»¥ä¸Š
 
 void getexpression()
 {
@@ -98,13 +98,13 @@ void getexpression()
 	 while((*p = getchar()) != '\n'){
 	 	if(*p != ' '){
 	 		if((*p >= 'A')&&(*p <= 'Z')){
-	 			*p += 'a'-'A';//½«´óÐ´×ª»¯ÎªÐ¡Ð´
+	 			*p += 'a'-'A';//å°†å¤§å†™è½¬åŒ–ä¸ºå°å†™
 	 		}
 	 	p++;
 	 	limit++;
 	 	}
 	 }
-	 *p++ = '#';//ÓÃ#±ê¼Ç±í´ïÊ½¿ªÍ·ºÍ½áÎ²
+	 *p++ = '#';//ç”¨#æ ‡è®°è¡¨è¾¾å¼å¼€å¤´å’Œç»“å°¾
 	 *p = '\0';
 }
 
@@ -176,15 +176,15 @@ char Prioritize(ElemenType *operator1, ElemenType *operator2)
 			case '^': return (strcmp(oper2,"(")||strcmp(oper2,"!")||strcmp(oper2,"^")) ? '>' : '<';
 			case '#': return !strcmp(oper2,"#") ? '=' : '<';
 		}
-	}else {printf("ERROR:102");exit(0);}//³öÏÖ²»¿ÉÊ¶±ðµÄÔËËã·û
+	}else {printf("ERROR:102");exit(0);}//å‡ºçŽ°ä¸å¯è¯†åˆ«çš„è¿ç®—ç¬¦
 }
-//ÓÅÏÈ¼¶·µ»Ø½áÊø
+//ä¼˜å…ˆçº§è¿”å›žç»“æŸ
 
 int factorial(n)
 {
 	if(n <= 1) return 1;
 	else return n * factorial(n-1);
-}//½×³ËÔËËã Î´²âÊÔ
+}//é˜¶ä¹˜è¿ç®— æœªæµ‹è¯•
 
 ElemenType Calculate(ElemenType num1, ElemenType oper, ElemenType num2)
 {
@@ -212,11 +212,11 @@ int main()
 {
 	ElemenType num1, num2, oper;
 //	char c;
-	printf("¼òÒ×¼ÆËãÆ÷v0.1.0 \n\n");
-	printf("Ö§³ÖµÄÔËËã·û:\n| + | - | * | / | \n|sin|cos|tan|   | \n| lg| ln| ^ | ! |\n\n");
-	printf("´íÎó´úÂë:\n101: ±í´ïÊ½²»ºÏ·¨£¬Çë¼ì²é±í´ïÊ½ÊäÈëÊÇ·ñÕýÈ· \n102: ÓÐÎ¥·¨ÔËËã·û\n\n");
-	printf("ÊäÈë±í´ïÊ½£¬»Ø³µÇóÖµ \n");
-	printf("ÊäÈëquit½áÊø³ÌÐò\n\n\n");
+	printf("ç®€æ˜“è®¡ç®—å™¨v0.1.0 \n\n");
+	printf("æ”¯æŒçš„è¿ç®—ç¬¦:\n| + | - | * | / | \n|sin|cos|tan|   | \n| lg| ln| ^ | ! |\n\n");
+	printf("é”™è¯¯ä»£ç :\n101: è¡¨è¾¾å¼ä¸åˆæ³•ï¼Œè¯·æ£€æŸ¥è¡¨è¾¾å¼è¾“å…¥æ˜¯å¦æ­£ç¡® \n102: æœ‰è¿æ³•è¿ç®—ç¬¦\n\n");
+	printf("è¾“å…¥è¡¨è¾¾å¼ï¼Œå›žè½¦æ±‚å€¼ \n");
+	printf("è¾“å…¥quitç»“æŸç¨‹åº\n\n\n");
 	
 	while(1){
 		i = 0;
@@ -244,9 +244,7 @@ int main()
 					case '>':
 						Pop(OPER,&oper);
 						Pop(NUM,&num2);
-						if(oper.type == 2){
-							Pop(NUM,&num1);
-						}
+						if(oper.type == 2) Pop(NUM,&num1);
 						Push(Calculate(num1,oper,num2), NUM);
 				}
 			}
@@ -264,4 +262,3 @@ int main()
 	free(expression);
 	return 0;
 }
-
