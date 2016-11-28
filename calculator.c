@@ -38,7 +38,7 @@ void Pop(Stack S, ElemenType *out)
 {
 	SNode *FirstCell;
 	FirstCell = S->next;
-	if(!FirstCell){//???
+	if(!FirstCell){//堆栈为空
 		printf("ERROR:101 \n");//错误代码101
 		exit(0);//终止程序，错误原因可能是表达式违法
 	}
@@ -84,7 +84,7 @@ struct{
 } OneChar;//判断每一个独立单位是数字或运算符
 
 char *expression;
-int i = 0;//字符串数组脚标
+int i = 0;//字符串数组脚标，记录当前位置
 
 //表达式变量初始化 以上
 
@@ -104,7 +104,7 @@ void getexpression()
 	 	limit++;
 	 	}
 	 }
-	 *p++ = '#';//用#标记表达式开头和结尾
+	 *p++ = '=';//用=标记表达式开头和结尾，因文件操作输出优雅 改标识符为=
 	 *p = '\0';
 }
 
@@ -112,19 +112,19 @@ int judge(char ch){
 	if((ch >= '0')&&(ch <= '9')||(ch == '.'))
 		return 1;
 	else if((ch == '+')&&(ch == '-')){
-		if((i == 0)||(expression[i-1] == '('))
+		if((i == 0)||(expression[i-1] == '('))//若+/-在字符串头或'('后则为正负号，作为一个有效字符读入
 			return 1;
 	}
 	return 0;
 }
 
-void getOneChar()
+void getOneChar()//用'\0'分割字符串
 {
 	char *p = OneChar.str;
 	*p = expression[i];
 	if(judge(*p)){
-		while(judge(*++p = expression[++i]));//
-		*p = '\0';
+		while(judge(*++p = expression[++i]));//读完一整个有效字符
+		*p = '\0';//插入'\0'使其成为一个独立字符串
 		OneChar.kind = 0;	
 		return;
 	}
@@ -148,14 +148,14 @@ void getOneChar()
 //	}
 	OneChar.kind = 1;
 	return;
-}
+}//从表达式中截取一个有效的字符串
 
 char Prioritize(ElemenType *operator1, ElemenType *operator2)
 {
 	char *oper1,*oper2;
 	oper1 = operator1->operator;
 	oper2 = operator2->operator;
-	if(!strcmp(oper1,"ln")||!strcmp(oper1,"log")||
+	if(!strcmp(oper1,"ln")||!strcmp(oper1,"lg")||
 		!strcmp(oper1,"sin")||!strcmp(oper1,"cos")||!strcmp(oper1,"tan")){
 		operator1->type = 1;
 		return (!strcmp(oper2,"!")||!strcmp(oper2,"(")||!strcmp(oper2,"^"))? '<' : '>' ;
@@ -165,16 +165,16 @@ char Prioritize(ElemenType *operator1, ElemenType *operator2)
 		return '>';//
 	}
 	else if(!strcmp(oper1,"+")||!strcmp(oper1,"-")||!strcmp(oper1,"*")||!strcmp(oper1,"/")||
-			!strcmp(oper1,"(")||!strcmp(oper1,")")||!strcmp(oper1,"^")||!strcmp(oper1,"#")){
+			!strcmp(oper1,"(")||!strcmp(oper1,")")||!strcmp(oper1,"^")||!strcmp(oper1,"=")){
 		operator1->type = 2;
 		switch(oper1[0]){
 			case '+': case '-': return (!strcmp(oper2,"+")||!strcmp(oper2,"-")||
-										!strcmp(oper2,")")||!strcmp(oper2,"#")) ? '>' : '<';
+										!strcmp(oper2,")")||!strcmp(oper2,"=")) ? '>' : '<';
 			case '*': case '/': return (strcmp(oper2,"(")||strcmp(oper2,"^")) ? '>' : '<';
 			case '(': return !strcmp(oper2,")") ? '=' : '<';
 			case ')': return '>';
 			case '^': return (strcmp(oper2,"(")||strcmp(oper2,"!")||strcmp(oper2,"^")) ? '>' : '<';
-			case '#': return !strcmp(oper2,"#") ? '=' : '<';
+			case '=': return !strcmp(oper2,"=") ? '=' : '<';
 		}
 	}else {printf("ERROR:102");exit(0);}//出现不可识别的运算符
 }
@@ -211,24 +211,31 @@ ElemenType Calculate(ElemenType num1, ElemenType oper, ElemenType num2)
 int main()
 {
 	ElemenType num1, num2, oper;
-//	char c;
+
+	int mode;
+	char s[1024];
+
 	printf("简易计算器v0.1.0 \n\n");
 	printf("支持的运算符:\n| + | - | * | / | \n|sin|cos|tan|   | \n| lg| ln| ^ | ! |\n\n");
 	printf("错误代码:\n101: 表达式不合法，请检查表达式输入是否正确 \n102: 有违法运算符\n\n");
-	printf("输入表达式，回车求值 \n");
-	printf("输入quit结束程序\n\n\n");
-	
+	printf("输入2进入文件读取模式\n");
+	scanf("%d",&mode);
+	fflush(stdin);
+	if(mode == 2) freopen("input","r",stdin);
+//		printf("输入表达式，回车求值 \n");
+//		printf("输入quit结束程序\n\n\n");
+		
 	while(1){
 		i = 0;
 		getexpression();
-		if(!strcmp(expression,"quit#")) return 0;
+		if(!strcmp(expression,"quit=")) return 0;
 
 		CreateStack(&NUM);
 		CreateStack(&OPER);
-		strcpy(oper.operator, "#");
+		strcpy(oper.operator, "=");
 		Push(oper, OPER);
 		getOneChar();
-		while(strcmp(OneChar.str,"#")||strcmp(OPER->next->date.operator,"#")){
+		while(strcmp(OneChar.str,"=")||strcmp(OPER->next->date.operator,"=")){
 			if(OneChar.kind){
 				strcpy(oper.operator,OneChar.str);
 				switch(Prioritize(&(OPER->next->date), &oper)){
@@ -249,16 +256,20 @@ int main()
 				}
 			}
 			else{
-				num1.number = atof(OneChar.str);
+				num1.number = atof(OneChar.str);//将字符串转化为浮点数计算
 				Push(num1,NUM);
 				getOneChar();
 			}
 		}
+		if(mode == 2) printf("%s",expression);
 		printf("%.16g\n\n",NUM->next->date.number);
 		free(expression);
 		DestroyStack(&NUM);
 		DestroyStack(&OPER);
 	}
+	
+	if(mode == 2) fclose(stdin);
+	
 	free(expression);
 	return 0;
 }
