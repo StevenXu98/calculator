@@ -11,7 +11,7 @@ typedef struct {
 	double number;
 	char operator[11];
 } ElemenType;
-
+ 
 
 typedef struct SNode{
 	ElemenType data;
