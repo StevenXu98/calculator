@@ -14,7 +14,7 @@ typedef struct {
 
 
 typedef struct SNode{
-	ElemenType date;
+	ElemenType data;
 	struct SNode * next;
 } SNode ,*Stack;
 
@@ -28,9 +28,9 @@ void Push(ElemenType in,Stack S)
 {
 	SNode *TmpCell;
 	TmpCell = (SNode *)malloc(sizeof(SNode));
-	strcpy(TmpCell->date.operator,in.operator);
-	TmpCell->date.number = in.number;
-	TmpCell->date.type = in.type;
+	strcpy(TmpCell->data.operator,in.operator);
+	TmpCell->data.number = in.number;
+	TmpCell->data.type = in.type;
 	TmpCell->next = S->next;
 	S->next = TmpCell;
 }
@@ -44,9 +44,9 @@ void Pop(Stack S, ElemenType *out)
 		exit(0);//终止程序，错误原因可能是表达式违法
 	}
 	S->next = FirstCell->next;
-	strcpy(out->operator,FirstCell->date.operator);
-	out->number = FirstCell->date.number;
-	out->type = FirstCell->date.type;
+	strcpy(out->operator,FirstCell->data.operator);
+	out->number = FirstCell->data.number;
+	out->type = FirstCell->data.type;
 	free(FirstCell);
 }
 
@@ -71,7 +71,7 @@ void DestroyStack(Stack *S)
 //	ElemenType TopElem;
 //	SNode *FirstCell;
 //	FirstCell = S->next;
-//	TopElem = FirstCell->date;
+//	TopElem = FirstCell->data;
 //	return TopElem;
 //}
 
@@ -237,10 +237,10 @@ int main()
 		strcpy(oper.operator, "=");
 		Push(oper, OPER);
 		getOneChar();
-		while(strcmp(OneChar.str,"=")||strcmp(OPER->next->date.operator,"=")){
+		while(strcmp(OneChar.str,"=")||strcmp(OPER->next->data.operator,"=")){
 			if(OneChar.kind){
 				strcpy(oper.operator,OneChar.str);
-				switch(Prioritize(&(OPER->next->date),&oper)){
+				switch(Prioritize(&(OPER->next->data),&oper)){
 					case '<':
 						strcpy(oper.operator,OneChar.str);
 						Push(oper,OPER);
@@ -266,8 +266,8 @@ int main()
 		
 		if(strcmp(expression,"=")){
 			printf("%s",expression);
-//			if(_isnan(NUM->next->date.number)) putchar(236);
-			printf("%.16g\n\n",NUM->next->date.number);
+//			if(_isnan(NUM->next->data.number)) putchar(236);
+			printf("%.16g\n\n",NUM->next->data.number);
 		}
 		
 		free(expression);
